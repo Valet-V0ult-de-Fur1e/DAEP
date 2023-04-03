@@ -1,11 +1,11 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-15 -*-
+ # -*- coding: utf-8 -*-
 import json
 import io
 
 
 def makeFrontendConfig():
-    with open("ibFrontend.json", mode='w') as readFile:
+    with open("ibFrontend.json", mode='w', encoding="utf-8") as readFile:
         ibFrontend = {
             "local_data": {},
             "global_data": {
@@ -45,7 +45,7 @@ def makeBackendConfig():
                         "result": result_dict[subject_task]
                     }
         with open('ibBackend.json', mode='w', encoding="utf-8") as write_file:
-            json.dump(ibBackend, write_file, ensure_ascii=False)
+            json.dump(ibBackend, write_file,ensure_ascii=False)
 
 
 baseConfigFileName = 'ibBase.json'
