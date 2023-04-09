@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [profileData, setProfileData] = useState(null)
+  const [iDBFrontend, setIDBFrontend] = useState(null)
 
   function getData() {
     axios({
@@ -23,6 +24,26 @@ function App() {
         console.log(error.response.headers)
         }
     })}
+  
+  function getIDB(){
+    axios({
+      method: "GET",
+      url:"/get_ib_front",
+    })
+    .then((response) => {
+      const res = response.data
+      setIDBFrontend(({
+        localData: res.local_data,
+        globalData: res.global_data}))
+      console.log(iDBFrontend)
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
 
   return (
     <div className="App">

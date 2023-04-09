@@ -1,5 +1,14 @@
 from flask import Flask, send_file
 
+
+frontData = None
+backData = None
+
+
+def loadData():
+    pass
+
+
 api = Flask(__name__)
 
 @api.route('/profile')
@@ -15,3 +24,6 @@ def my_profile():
 @api.route('/get_ib_front')
 def getIbFront():
     return send_file("ibFrontend.json")
+
+
+api.run()
