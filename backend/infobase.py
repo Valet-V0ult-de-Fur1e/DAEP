@@ -1,12 +1,11 @@
 #!/usr/bin/python
  # -*- coding: utf-8 -*-
 import json
-import io
 from ibStartData import *
 
 
 def makeFrontendConfig():
-    with open("ibFrontend.json", mode='w', encoding="utf-8") as readFile:
+    with open("ibBackend.json", mode='rb') as IBDataBackend_file:
         ibFrontend = {
             "local_data": {},
             "global_data": {
@@ -15,9 +14,13 @@ def makeFrontendConfig():
                 "provision": ["компьютер", "проектор", "флип-чарт", "доска", "звуковое оборудование (усилитель, микрофоны, наушники)"]
             }
         }
-        for direction, type_of_activity_dict in idb_v1.items():
-            ibFrontend["local_data"][direction] = list(type_of_activity_dict.keys())
-        json.dump(ibFrontend, readFile, ensure_ascii=False)
+        IBDataBackend = json.load(IBDataBackend_file)
+        for direction, type_of_activity_dict in IBDataBackend['local_data'].items():
+            ibFrontend["local_data"][direction] = []
+            for type_of_activity, type_of_activity_data in type_of_activity_dict['local'].items():
+                ibFrontend["local_data"][direction].append([type_of_activity, type_of_activity_data['equipment']])
+        with open("ibFrontend.json", mode='w', encoding="utf-8") as readFile:
+            json.dump(ibFrontend, readFile, ensure_ascii=False)
 
 
 def makeBackendConfig():
@@ -32,13 +35,13 @@ def makeBackendConfig():
                 }
             }
             for type_of_activity, subject_tasks_list in type_of_activity_dict.items():
-                ibBackend['local_data'][direction][type_of_activity] = {
+                ibBackend['local_data'][direction]['local'][type_of_activity] = {
                     "subject_tasks": {},
                     "equipment":[],
                     "person_tasks":{}
                 }
                 for subject_task in subject_tasks_list:
-                    ibBackend['local_data'][direction][type_of_activity]["subject_tasks"][subject_task] = {
+                    ibBackend['local_data'][direction]['local'][type_of_activity]["subject_tasks"][subject_task] = {
                         "duration": 18,
                         "module": quest_data_dict[subject_task]['module_name'],
                         "theory": quest_data_dict[subject_task]['teori'],
@@ -52,3 +55,6 @@ def makeBackendConfig():
 def makeStartData():
     makeBackendConfig()
     makeFrontendConfig()
+
+
+makeStartData()
