@@ -26,4 +26,14 @@ def getIbFront():
     return send_file("ibFrontend.json")
 
 
+@api.route('/get_ib_back')
+def getIbBack():
+    return send_file("ibBackend.json")
+
+
+@api.route('/constructor/test', methods=['GET', 'POST'])
+def make_program():
+    pass
+
+
 api.run()

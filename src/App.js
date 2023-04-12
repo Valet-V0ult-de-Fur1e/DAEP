@@ -7,24 +7,6 @@ function App() {
   const [profileData, setProfileData] = useState(null)
   const [iDBFrontend, setIDBFrontend] = useState(null)
 
-  function getData() {
-    axios({
-      method: "GET",
-      url:"/profile",
-    })
-    .then((response) => {
-      const res =response.data
-      setProfileData(({
-        profile_name: res.name,
-        about_me: res.about}))
-    }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
-  
   function getIDB(){
     axios({
       method: "GET",
@@ -44,6 +26,25 @@ function App() {
         }
     })
   }
+
+  function getData() {
+    axios({
+      method: "GET",
+      url:"/profile",
+    })
+    .then((response) => {
+      const res =response.data
+      setProfileData(({
+        profile_name: res.name,
+        about_me: res.about}))
+      getIDB()
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
 
   return (
     <div className="App">
