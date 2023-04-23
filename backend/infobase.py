@@ -16,9 +16,17 @@ def makeFrontendConfig():
         }
         IBDataBackend = json.load(IBDataBackend_file)
         for direction, type_of_activity_dict in IBDataBackend['local_data'].items():
-            ibFrontend["local_data"][direction] = []
+            ibFrontend["local_data"][direction] = {
+                'subjects':{},
+                'person': list(type_of_activity_dict['global']['person_tasks'].keys()),
+                'equipment': type_of_activity_dict['global']['equipment']
+            }
             for type_of_activity, type_of_activity_data in type_of_activity_dict['local'].items():
-                ibFrontend["local_data"][direction].append([type_of_activity, type_of_activity_data['equipment']])
+                ibFrontend["local_data"][direction]['subjects'][type_of_activity] = {
+                    'subject': list(type_of_activity_data['subject_tasks'].keys()),
+                    'equipment': type_of_activity_data['equipment'],
+                    'person': list(type_of_activity_data['person_tasks'].keys())
+                }
         with open("ibFrontend.json", mode='w', encoding="utf-8") as readFile:
             json.dump(ibFrontend, readFile, ensure_ascii=False)
 
