@@ -4,3 +4,6 @@
 <h3>
   После запуска серверов нужно вставить в файле appConfig.json в разделе "server_url" адрес flask сервера
 </h3>
+<h4>
+  Скачать последнюю версию можно по ссылке https://khv2022.pythonanywhere.com/constructor/get_app
+</h4>
