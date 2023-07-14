@@ -13,10 +13,10 @@ backData = None
 
 def loadData():
     global frontData, backData
-    if not os.path.exists('ibBackend.json'):
-        makeStartData()
-    if not os.path.exists('ibFrontend.json'):
-        makeFrontendConfig()
+    # if not os.path.exists('ibBackend.json'):
+    #     makeStartData()
+    # if not os.path.exists('ibFrontend.json'):
+    #     makeFrontendConfig()
     with open('ibBackend.json', 'r', encoding="utf-8") as fileBackendData:
         backData = json.load(fileBackendData)
     with open('ibFrontend.json', 'r', encoding="utf-8") as fileFrontendData:
@@ -50,12 +50,24 @@ def get_mrt():
     return send_file('Метод.рек.  Конструктор.docx')
 
 
+@app.route('/constructor/get_app')
+def get_app():
+    return send_file('Admin App.rar')
+
+
 @app.route('/constructor/get_programs_count')
 def get_programs_count():
     with open("data_file.json", "r") as data_file_read:
         data = json.load(data_file_read)
     return data
 
+@app.route('/admin/load_new_data', methods=['GET', 'POST'])
+def load_new_data():
+    with open("ibBackend.json", "w", encoding="utf-8") as write_file:
+        json.dump(request.json, write_file)
+    makeFrontendConfig()
+    loadData()
+    return 'ok'
 
 @app.route('/get_ib_front')
 @cross_origin()
@@ -69,11 +81,6 @@ def getIbBack():
     return send_file("ibBackend.json")
 
 
-@app.route('/constructor/test_req', methods=['GET', 'POST'])
-def test_req():
-    pass
-
-
 @app.route('/constructor/test', methods=['GET', 'POST'])
 def make_program():
     try:
@@ -84,6 +91,7 @@ def make_program():
 
         for key, item in request.values.lists():
             data_dict[key] = item if key in ['en_form_edu', 'en_subject_taskss', 'en_metasubject_tasks', 'en_personal_tasks', 'en_metasubject_tasks_no', 'cop_material_support_1', 'cop_material_support_2'] else item[0]
+        logData = data_dict.copy()
 
         modules_dict = []
         subj_data_dict = []
@@ -109,7 +117,7 @@ def make_program():
         data_dict['cop_person_result'] = ''
         all_time = int(data_dict["en_training_periodn"]) * int(data_dict["en_duration_lesson"]) * int(data_dict["en_number_classes"]) // 18
 
-        if len(data_dict['en_subject_taskss']) > 0:
+        if len(data_dict['en_subject_taskss']) > 0 and data_dict['en_subject_taskss'][0] != '':
             for item in data_dict['en_subject_taskss']:
                 modules_dict.append({"name": item, "time": backData['local_data'][data_dict['en_orientation']]['local'][data_dict['en_type_activity']]['subject_tasks'][item]['duration']})
                 module = {
@@ -120,7 +128,7 @@ def make_program():
                 subj_data_dict.append(module)
                 data_dict["cop_sub_result"] += backData['local_data'][data_dict['en_orientation']]['local'][data_dict['en_type_activity']]['subject_tasks'][item]['result']
 
-        if len(data_dict['en_metasubject_tasks']) > 0:
+        if len(data_dict['en_metasubject_tasks']) > 0 and data_dict['en_metasubject_tasks'][0] != '':
             for item in data_dict['en_metasubject_tasks']:
                 if all_time >= len(data_dict['en_subject_taskss']) + 1:
                     modules_dict.append({"name": item, "time": backData['global_data']['metasubject_with_watch'][item]['duration']})
@@ -132,7 +140,7 @@ def make_program():
                 subj_data_dict.append(module)
                 data_dict["cop_meta_result"] += backData['global_data']['metasubject_with_watch'][item]['result']
 
-        if len(data_dict['en_metasubject_tasks_no']) > 0:
+        if len(data_dict['en_metasubject_tasks_no']) > 0 and data_dict['en_metasubject_tasks_no'][0] != '':
             for item in data_dict['en_metasubject_tasks_no']:
                 data_dict["cop_meta_result"] += backData['global_data']['metasubject'][item]['result']
 
@@ -153,7 +161,9 @@ def make_program():
         docFileOut.save(programName)
         return send_file(programName)
     except BaseException as e:
-        return {}
+        with open(f'{programCount}log.json', "w") as fileerror:
+            json.dump(logData, fileerror)
+        return backData
 
 
 @app.errorhandler(404)
