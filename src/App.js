@@ -40,7 +40,7 @@ function App (){
   function getIDB(){
     axios({
       method: "GET",
-      url:"http://khv2022.pythonanywhere.com/constructor/get_ib_front",
+      url:"http://khv2022.pythonanywhere.com/get_ib_front",
     })
     .then((response) => {
       setRequestStatus(1);
