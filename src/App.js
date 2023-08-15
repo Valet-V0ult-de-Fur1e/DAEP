@@ -235,8 +235,7 @@ function App (){
     if (requestStatus === 0) {return <div>Идёт загрузка...</div>}
     else if (requestStatus === 2){return <div>Проблема с сетью или сервером</div>}
     else if (requestStatus === 1) {
-      // return <form action="http://khv2022.pythonanywhere.com/constructor/test" method = "POST">
-      return <form action="http://127.0.0.1:5000/constructor/test" method = "POST">
+      return <form action="http://khv2022.pythonanywhere.com/constructor/test" method = "POST">
         <div className="forms">
           <h2>Титульный лист</h2>
           <p>Учредитель образовательной организации</p>
